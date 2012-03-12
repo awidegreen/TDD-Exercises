@@ -1,0 +1,9 @@
+PASSED_FILES:
+february-good.ros
+january-good.ros
+march-good.ros
+
+FAILED_FILES:
+february-bad.ros,total_less_than_projected,1
+january-bad.ros,total_greater_than_projected,1
+march-bad.ros,total_greater_than_projected,1
