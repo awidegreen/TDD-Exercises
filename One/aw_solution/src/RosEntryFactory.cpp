@@ -40,7 +40,7 @@ namespace ros
       }
 
       std::string sub = line.substr(startAt, endAt - startAt); 
-      //std::cout << "startat:" << startAt << " - endAt:" << endAt << " - sub:" << sub << std::endl;
+      //   std::cout << "startat:" << startAt << " - endAt:" << endAt << " - sub:" << sub << std::endl;
 
       switch ( i )        
       {
@@ -52,6 +52,8 @@ namespace ros
           std::stringstream ss;
           ss << sub;
           ss >> soldMonth;
+          if ( sub != "0"  && soldMonth == 0)
+            return NULL;
           break;
         }
       case 2:
@@ -59,6 +61,8 @@ namespace ros
           std::stringstream ss;
           ss << sub;
           ss >> proInc;
+          if ( (sub != "0.0" || sub != "0" )  && proInc == 0.0)
+            return NULL;
           break;
         }
       default:
@@ -69,7 +73,7 @@ namespace ros
       startAt = endAt+1;
     }
 
-    //std::cout << "name: " << name << " soldmonth: " << soldMonth << " proInc: " << proInc << std::endl;
+//    std::cout << "name: " << name << " soldmonth: " << soldMonth << " proInc: " << proInc << std::endl;
 
     return new RosEntry(name, soldMonth, proInc);
   }

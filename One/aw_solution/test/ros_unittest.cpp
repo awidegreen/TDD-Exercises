@@ -1,6 +1,7 @@
 // ros includes
 #include "RosEntry.h"
 #include "RosEntryFactory.h"
+#include "RosFileReader.h"
 
 // gtest
 #include <gtest/gtest.h>
@@ -39,14 +40,38 @@ TEST(Ros, RosEntryFactory)
   ss << name << "," << soldMonth << "," << proInc;
   ss >> line;
   RosEntry* entry = RosEntryFactory::createRosEntry(line);
-
   ASSERT_TRUE( entry != NULL );
+
+  entry = RosEntryFactory::createRosEntry("");
+  ASSERT_TRUE( entry == NULL );
+
+  entry = RosEntryFactory::createRosEntry("asdasdasdasd,asdd,0222");
+  ASSERT_TRUE( entry == NULL );
+
+  entry = RosEntryFactory::createRosEntry("asddasd,2334,asdsd");
+  ASSERT_TRUE( entry == NULL );
+
+  entry = RosEntryFactory::createRosEntry("asddasd,2334,");
+  ASSERT_TRUE( entry == NULL );
+
+  entry = RosEntryFactory::createRosEntry("asddasd,23asdsd");
+  ASSERT_TRUE( entry == NULL );
+
+  entry = RosEntryFactory::createRosEntry("asddasd,,asdsd");
+  ASSERT_TRUE( entry == NULL );
 }
 
 TEST(Ros, RosFile)
 {
+  std::string fileName = "../ROS_files/february-north_branch-2011.ros";
   
+  RosFile* rosFile =
+    RosFileReader::parseRosFile(fileName);
 
+  ASSERT_TRUE( rosFile != NULL );
+  ASSERT_TRUE( rosFile->getProjectedIncome() == 4284 );
+  ASSERT_TRUE( rosFile->getCalcTotalIncome() == 4284 );
+  ASSERT_TRUE( rosFile->getDiscrepancy() == 0 );
 }
 
 

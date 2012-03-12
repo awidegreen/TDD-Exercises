@@ -11,28 +11,23 @@ namespace ros
 {
   class RosFile
   {
-  private:
-    typedef std::vector<RosEntry*> RosVector;
-    
-    std::string mFileName;
-    RosVector mEntries;
-    double mReadTotalIncome;
-
   public:
+    typedef std::vector<RosEntry*> RosEntryVector;
+    
     RosFile(std::string fileName)
       : mFileName(fileName)
     {
     }
 
     double
-    getReadTotalIncome() const
+    getProjectedIncome() const
     { return mReadTotalIncome;  }
 
     double
     getCalcTotalIncome() const 
     {
       double result = .0;
-      RosVector::const_iterator it = mEntries.begin();
+      RosEntryVector::const_iterator it = mEntries.begin();
       while ( it != mEntries.end() )
       {
         result += (*it)->getProjectedIncome();
@@ -40,6 +35,12 @@ namespace ros
       }
 
       return result;
+    }
+
+    double
+    getDiscrepancy() const
+    {
+      return getProjectedIncome() - getCalcTotalIncome();
     }
 
     void
@@ -53,6 +54,18 @@ namespace ros
     {
       mReadTotalIncome = income;
     }
+
+    RosEntryVector
+    getRosEntries() const
+    {
+      return mEntries;
+    }
+
+  private:
+    std::string mFileName;
+    RosEntryVector mEntries;
+    double mReadTotalIncome;
+
   };
 
 }
