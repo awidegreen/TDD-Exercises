@@ -1,3 +1,6 @@
 *.beam
 *~
 #*#
+
+# google test framework gtest
+gtest
