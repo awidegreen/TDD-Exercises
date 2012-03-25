@@ -7,3 +7,6 @@ compile gtest first
 * create lib -- `ar -rv libgtest.a gtest-all.o`
 
 further info see http://lembra.wordpress.com/2011/10/17/building-google-test-framework-with-cmake/
+
+The string parsing is implemented with strtk: http://www.partow.net/programming/strtk/index.html
+
