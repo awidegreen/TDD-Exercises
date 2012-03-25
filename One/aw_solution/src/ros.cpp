@@ -1,5 +1,7 @@
 #include "ros.h"
 
+#include <iostream>
+
 const bool
 readFile(const std::string& s) 
 {
@@ -8,11 +10,13 @@ readFile(const std::string& s)
   return true;
 }
 
-/*
+
 int main()
 {
   readFile(""); //"hallo", content);
 
+  std::cout << "I'm in main" << std::endl;
+
   return 0;
 }
-*/
+

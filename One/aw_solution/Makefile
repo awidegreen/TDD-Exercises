@@ -1,43 +1,41 @@
-# google test vars
-GTEST_DIR = ../../gtest
+# directorys
+OBJS_DIR      = ./obj
+SRC_DIR       = ./src
+TEST_DIR      = ./test
+# compiler
+CXXFLAGS     += -g -Wall -Wno-long-long -I$(SRC_DIR)  #-Wextra
+# src and objs
+OBJECTS       = RosEntryFactory.o RosFileReader.o
+SRC_EXT       = cpp
+#test
+GTEST_DIR     = ../../gtest
+TEST_CXXFLAGS = $(CXXFLAGS) -I$(GTEST_DIR)/include -L$(GTEST_DIR)
+# vpath
+VPATH         = $(SRC_DIR) $(TEST_DIR)
+# strtk options
+STRTK_OPTIONS = -ansi -pedantic-errors -Wall -Wextra -Dstrtk_no_tr1_or_boost -lstdc++
 
-SRCDIR=src
-TESTDIR=test
+all: ros
 
-# c++ compiler
-#CXX=g++
-# precompiler flags
-CPPFLAGS += -I$(GTEST_DIR)/include -I$(SRCDIR)
-# c++ compiler flags
-CXXFLAGS += -I$(GTEST_DIR)/include -I$(SRCDIR) -L$(GTEST_DIR) -c -Wall -Wextra -Wno-ignored-qualifiers -g
-# bind flags
-LDFLAGS=
+ros: $(addprefix $(OBJS_DIR)/,$(OBJECTS)) $(OBJS_DIR)/ros.o
+	$(CXX) $(CXXFLAGS) -o ros $^
 
-# sources
-SOURCES = $(SRCDIR)/RosEntry.h $(SRCDIR)/RosEntryFactory.h $(SRCDIR)/RosEntryFactory.cpp $(SRCDIR)/RosFileReader.h $(SRCDIR)/RosFileReader.cpp
-TESTSOURCES = $(TESTDIR)/ros_unittest.cpp
-# obj files
-OBJECTS = $(SOURCES:.cpp=.o)
-TESTOBJECTS = $(TESTSOURCES:.cpp=.o)
+$(OBJS_DIR)/%.o:%.$(SRC_EXT)
+	test -d $(OBJS_DIR) || mkdir $(OBJS_DIR)
+	$(CXX) -c $(CXXFLAGS) $(STRTK_OPTIONS) $< -o $@
 
-# executable name
-EXECUTABLE = ros
-# tests
-TESTS = ros_unittest
+test: $(addprefix $(OBJS_DIR)/,$(OBJECTS)) $(OBJS_DIR)/rostest.o
+	$(CXX) $(TEST_CXXFLAGS) -lpthread -lgtest -o rostest $^ $(GTEST_DIR)/libgtest.a
+
+$(OBJS_DIR)/rostest.o: rostest.$(SRC_EXT)
+	$(CXX) -c $(TEST_CXXFLAGS) $< -o $@
 
 
-
-all: $(SOURCES) $(EXECUTABLE) 
-
-$(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
-
-.cpp.o:
-	$(CXX) $(CXXFLAGS) $< -o $@
+.PHONY: clean cleanest
 
 clean:
-	$(RM) $(SRCDIR)/*.o *.o $(TESTDIR)/*.o *~ $(EXECUTABLE) $(TESTS)
+	$(RM) -fr $(OBJS_DIR)
 
+cleanest: clean
+	$(RM) ros rostest
 
-$(TESTS): $(OBJECTS) $(TESTOBJECTS) 
-	$(CXX) $(LDFLAGS) $(OBJECTS) $(TESTOBJECTS) $(GTEST_DIR)/libgtest.a -lpthread -o $@
